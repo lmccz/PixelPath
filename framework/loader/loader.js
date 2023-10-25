@@ -39,9 +39,10 @@ export class Loader
         });
     }
 
-    complete()
+    complete(data)
     {
         this.completed += 1;
-        if (this.completed === this.total) this.scene.events.emit('create', this.scene.key);
+        this.scene.events.emit('load-progress', { total: this.total, complete: this.completed, ...data });
+        if (this.completed === this.total) this.scene.events.emit('load-complete', this.scene.key);
     }
 }

@@ -1,4 +1,3 @@
-
 import { GameEvents } from "../core/game.js";
 import { SceneEvents } from "./scene.js";
 
@@ -6,79 +5,57 @@ import { SceneEvents } from "./scene.js";
 export class SceneManager
 {
     game = undefined;
-    scenes = [];
+    scene = [];
 
-    constructor(game, scenes)
+    constructor(game, scene)
     {
         this.game = game;
-        this.game.events.on(GameEvents.START, this.start, this);
 
-        scenes.forEach(scene =>
+        const newScene = new scene();
+
+        newScene.game = this.game;
+        newScene.cache = this.game.cache;
+        newScene.renderer = this.game.renderer;
+        newScene.scene = this;
+        newScene.input = this.game.input;
+        newScene.anims = this.game.anims;
+
+        game.plugins.forEach(p =>
         {
-            const newScene = new scene(this);
+            newScene[p.key] = new p.plugin(newScene);
+        })
 
-            newScene.game = this.game;
-            newScene.cache = this.game.cache;
-            newScene.renderer = this.game.renderer;
-            newScene.scene = this;
-            newScene.input = this.game.input;
-            newScene.anims = this.game.anims;
-
-            game.scenePlugin.forEach(p =>
-            {
-                newScene[p.key] = new p.plugin(newScene);
-            })
-
-            this.scenes.push(newScene);
-        });
+        this.scene = newScene;
     }
 
-    start(key = this.scenes[0].key)
+    start()
     {
-        const scene = this.scenes.find(s => s.key === key);
-
-        if (!scene)
+        if (this.scene.init)
         {
-            throw new Error('no has scene for key:', key);
+            this.scene.init();
         }
 
-        if (scene.init)
+        if (this.scene.preload)
         {
-            scene.init();
-        }
-
-        if (scene.preload)
-        {
-            scene.preload();
-            scene.events.emit(SceneEvents.LOAD);
-            scene.events.once(SceneEvents.CREATE, this.create, this);
+            this.scene.preload();
+            this.scene.events.emit(SceneEvents.LOAD);
+            this.scene.events.once('load-complete', this.create, this);
             return;
         }
 
-        this.create(key);
+        this.create();
     }
 
-    create(key)
+    create()
     {
-        const scene = this.scenes.find(s => s.key === key);
-
-        if (!scene) throw new Error('no has scene for key:', key);
-        if (scene.create) scene.create();
-
-        scene.active = true;
+        if (this.scene.create) this.scene.create();
+        this.game.events.emit(GameEvents.START);
     }
 
     tick(time, delta)
     {
-        for (let i = 0; i < this.scenes.length; i++)
-        {
-            if (this.scenes[i].active)
-            {
-                this.scenes[i].preUpdate(time, delta);
-                this.scenes[i].update(time, delta);
-
-                this.game.renderer.render(this.scenes[i].world.children, this.scenes[i].camera);
-            }
-        }
+        this.scene.events.emit(SceneEvents.PREUPDATE, time, delta);
+        this.scene.update(time, delta);
+        this.scene.renderer.render(this.scene.world.children, this.scene.camera);
     }
 }

@@ -1,9 +1,13 @@
 - https://webglfundamentals.org/webgl/lessons/zh_cn/webgl-fundamentals.html
 
+- BUG： tween的状态是叠加的
+- bitmaptext
+- 天空盒
+- 原点
+- 对象翻转
+- 组
+- tween做属性解析
 
-- 光源
-- sprite
-- preUpdate()
 
 
 # 流程

@@ -19,7 +19,9 @@ export class AnimationState
         const { texture, frames, repeat, frameRate, cols, rows } = this.parent.scene.anims.getAnims(key);
 
         this.parent.texture = this.parent.scene.cache.get(texture);
-        this.parent.uvSize.setTo(1.0 / cols, 1.0 / rows)
+        this.parent.uvSize.setTo(1.0 / cols, 1.0 / rows);
+        this.parent.width = this.parent.uvSize.x * this.parent.texture.width;
+        this.parent.height = this.parent.uvSize.y * this.parent.texture.height;
 
         this.frames.length = 0;
         this.frames = frames;
@@ -34,7 +36,7 @@ export class AnimationState
         this.parent.uvOffset.y = this.frames[0].y;
     }
 
- 
+
 
     update(t, d)
     {

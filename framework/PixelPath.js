@@ -3,6 +3,7 @@ import { Keys } from "./input/input.js";
 import { Scene, SceneEvents } from "./scene/scene.js";
 import { Color } from "./utils/display/color.js";
 import { EventEmitter } from "./utils/event-emitter.js";
+import { DegToRad, RadToDeg } from "./utils/math/angle.js";
 import { Vector3 } from "./utils/math/vector3.js";
 
 
@@ -11,7 +12,7 @@ const PixelPath = {
     GameEvents,
     Scene,
     SceneEvents,
-    Math: { Vector3 },
+    Math: { Vector3, Angle: { DegToRad, RadToDeg } },
     Input: { Keys },
     Version: 0,
     Author: 'lmccz',

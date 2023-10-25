@@ -23,7 +23,7 @@ export class ImageFile
         image.onload = () =>
         {
             this.loader.scene.game.events.emit('createtexture', data.key, image);
-            this.loader.scene.events.emit('loadcompleted');
+            this.loader.scene.events.emit('loadcompleted', data);
         };
 
         image.src = data.src;

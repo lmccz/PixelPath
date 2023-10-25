@@ -17,15 +17,10 @@ export class Sprite extends GameObject
 
     anims;
 
-    constructor(scene, x, y, z, texture, anims)
+    constructor(scene, x, y, z, anims)
     {
         super(scene);
-
         this.transform.position.setTo(x, y, z);
-        this.texture = scene.cache.get(texture);
-        this.width = this.texture.width;
-        this.height = this.texture.height;
-
         this.anims = new AnimationState(this);
         this.anims.play(anims);
     }
